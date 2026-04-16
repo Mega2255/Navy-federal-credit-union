@@ -216,6 +216,37 @@
       .balance-grid { grid-template-columns:1fr !important; }
       .modal-box { padding:1.5rem; }
     }
+
+    /* ── MOBILE RESPONSIVE ── */
+    @media(max-width:768px) {
+      .balance-card { padding:1.25rem; border-radius:16px; }
+      .balance-card::before { width:160px; height:160px; top:-40px; right:-40px; }
+      .balance-card::after  { width:120px; height:120px; bottom:-30px; left:-30px; }
+      #main-balance { font-size:2rem !important; }
+      .action-btn { padding:.75rem .5rem; border-radius:12px; }
+      .action-btn span { font-size:.7rem !important; }
+      .card { padding:1rem; border-radius:14px; }
+      .card-sm { padding:.9rem; border-radius:10px; }
+      .mini-stat { padding:.9rem; border-radius:12px; }
+      .tx-icon { width:38px; height:38px; border-radius:10px; }
+      .topbar { padding:0 1rem; height:56px; }
+      .sidebar { width:230px; }
+      .topbar-secured { display:none !important; }
+      .topbar-date { display:none !important; }
+    }
+
+    @media(max-width:480px) {
+      .balance-card { padding:1rem; }
+      #main-balance { font-size:1.7rem !important; }
+      .action-btn { padding:.6rem .35rem; }
+      .action-btn span { font-size:.65rem !important; }
+      .card { padding:.85rem; border-radius:12px; }
+      .card-sm { padding:.75rem; }
+      .tx-icon { width:34px; height:34px; font-size:.9rem !important; }
+      .tx-item { gap:.65rem; padding:.7rem 0; }
+      .status-badge { font-size:.65rem; padding:.15rem .45rem; }
+      .main-content > div > div { padding:.85rem !important; }
+    }
   </style>
 </head>
 <body>
@@ -339,27 +370,28 @@
   <div class="main-content">
     <!-- TOP BAR -->
     <header class="topbar">
-      <div style="display:flex;align-items:center;gap:1rem">
-        <button id="menu-btn" onclick="toggleSidebar()" style="background:none;border:none;cursor:pointer;color:var(--text);display:none">
+      <div style="display:flex;align-items:center;gap:.75rem;flex:1;min-width:0;overflow:hidden">
+        <button id="menu-btn" onclick="toggleSidebar()" style="background:none;border:none;cursor:pointer;color:var(--text);display:none;flex-shrink:0">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <div>
-          <div style="font-size:.78rem;color:var(--text-muted)" id="topbar-greeting">Good morning</div>
-          <div style="font-size:1rem;font-weight:600;color:var(--text)" id="topbar-name">Loading…</div>
+        <div style="min-width:0;overflow:hidden">
+          <div style="font-size:.78rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="topbar-greeting">Good morning</div>
+          <div style="font-size:1rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="topbar-name">Loading…</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:1rem">
-        <!-- Security badge -->
-        <div style="display:flex;align-items:center;gap:.4rem;background:rgba(0,133,124,.1);border:1px solid rgba(0,133,124,.2);border-radius:8px;padding:.35rem .75rem">
+      <div style="display:flex;align-items:center;gap:.75rem;flex-shrink:0">
+        <!-- Security badge — hidden on mobile -->
+        <div class="topbar-secured" style="display:flex;align-items:center;gap:.4rem;background:rgba(0,133,124,.1);border:1px solid rgba(0,133,124,.2);border-radius:8px;padding:.35rem .75rem">
           <svg width="12" height="12" fill="none" stroke="var(--teal-light)" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span style="font-size:.72rem;color:var(--teal-light);font-weight:600">SECURED</span>
         </div>
-        <div style="font-size:.78rem;color:var(--text-muted);background:var(--surface2);padding:.4rem .85rem;border-radius:8px;border:1px solid var(--border)" id="topbar-date"></div>
-        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:.85rem" id="top-avatar">?</div>
+        <!-- Date — hidden on mobile -->
+        <div class="topbar-date" style="font-size:.78rem;color:var(--text-muted);background:var(--surface2);padding:.4rem .85rem;border-radius:8px;border:1px solid var(--border)" id="topbar-date"></div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy-mid));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:.85rem;flex-shrink:0" id="top-avatar">?</div>
       </div>
     </header>
 
-    <div style="padding:1.5rem" id="page-content">
+    <div style="padding:1.25rem" id="page-content">
 
       <!-- ══════════════ HOME PAGE ══════════════ -->
       <div class="page-section active" id="page-home">
@@ -369,7 +401,7 @@
             <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
               <div>
                 <p style="color:rgba(255,255,255,.5);font-size:.75rem;font-weight:600;letter-spacing:.12em;margin-bottom:.6rem">TOTAL AVAILABLE BALANCE</p>
-                <div style="font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:white;letter-spacing:-.03em;line-height:1" id="main-balance">$0.00</div>
+                <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:700;color:white;letter-spacing:-.03em;line-height:1" id="main-balance">$0.00</div>
                 <div style="display:flex;align-items:center;gap:.75rem;margin-top:.6rem">
                   <p style="color:rgba(255,255,255,.35);font-size:.78rem">Acct: <span id="main-acct-num" style="color:rgba(255,255,255,.65);font-weight:500;font-family:'Space Grotesk',monospace">NF••••••••</span></p>
                   <span style="color:rgba(255,255,255,.2)">•</span>
@@ -1166,6 +1198,18 @@
   }
 
   // ════════ TRANSACTIONS ════════
+  let allCardApps = [];
+  let allLoanApps = [];
+
+  function buildCombinedActivity() {
+    // Tag each entry with its source type so txHTML can handle it
+    const txItems   = allTransactions.map(t => ({...t, _src:'tx'}));
+    const cardItems = allCardApps.map(a => ({...a, _src:'card'}));
+    const loanItems = allLoanApps.map(a => ({...a, _src:'loan'}));
+    return [...txItems, ...cardItems, ...loanItems]
+      .sort((a,b) => b.createdAt - a.createdAt);
+  }
+
   function listenTransactions() {
     onValue(ref(db,'transactions'), (snap) => {
       allTransactions = [];
@@ -1183,6 +1227,27 @@
       badge.style.display = pending > 0 ? '' : 'none';
       badge.textContent = pending;
     });
+
+    // Listen to card applications and include in recent activity
+    onValue(ref(db,'cardApplications'), (snap) => {
+      allCardApps = [];
+      snap.forEach(child => {
+        const d = { id: child.key, ...child.val() };
+        if (d.userId === currentUser.uid) allCardApps.push(d);
+      });
+      renderRecentTx();
+    });
+
+    // Listen to loan applications and include in recent activity
+    onValue(ref(db,'loanApplications'), (snap) => {
+      allLoanApps = [];
+      snap.forEach(child => {
+        const d = { id: child.key, ...child.val() };
+        if (d.userId === currentUser.uid) allLoanApps.push(d);
+      });
+      renderRecentTx();
+    });
+
     onValue(ref(db,`users/${currentUser.uid}/balance`), s => updateBalance(s.val()||0));
     onValue(ref(db,`users/${currentUser.uid}/blocked`), s => {
       if(s.val()===true) document.getElementById('blocked-screen').classList.add('show');
@@ -1191,12 +1256,13 @@
 
   function renderRecentTx() {
     const container = document.getElementById('recent-tx');
-    const recent = allTransactions.slice(0,5);
+    const combined = buildCombinedActivity();
+    const recent = combined.slice(0,5);
     if(!recent.length) {
       container.innerHTML = `<div style="text-align:center;padding:2.5rem;color:var(--text-muted)"><p style="font-size:.875rem">No transactions yet</p></div>`;
       return;
     }
-    container.innerHTML = recent.map(tx => txHTML(tx)).join('');
+    container.innerHTML = recent.map(item => txHTML(item)).join('');
   }
 
   function renderHistoryTx(filtered = null) {
@@ -1210,6 +1276,44 @@
   }
 
   function txHTML(tx, full = false) {
+    // ── Card application entry ──
+    if (tx._src === 'card') {
+      const sc = tx.status === 'approved' ? 'status-approved' : tx.status === 'declined' ? 'status-declined' : 'status-pending';
+      const amtColor = tx.status === 'approved' ? '#ff6b7a' : tx.status === 'declined' ? 'var(--text-muted)' : 'var(--text)';
+      const date = new Date(tx.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      return `
+        <div class="tx-item">
+          <div class="tx-icon" style="background:rgba(0,33,71,.5);font-size:1.1rem">${tx.cardIcon||'💳'}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:.875rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tx.cardName||'Card Application'}</div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-top:.15rem">${date} · Card</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-weight:700;font-size:.9rem;color:${amtColor}">${tx.status==='approved'?'-':''}$${parseFloat(tx.cardPrice||0).toFixed(2)}</div>
+            <span class="status-badge ${sc}">${tx.status}</span>
+          </div>
+        </div>`;
+    }
+    // ── Loan application entry ──
+    if (tx._src === 'loan') {
+      const sc = tx.status === 'approved' ? 'status-approved' : tx.status === 'declined' ? 'status-declined' : 'status-pending';
+      const amtColor = tx.status === 'approved' ? '#4ade80' : tx.status === 'declined' ? 'var(--text-muted)' : 'var(--text)';
+      const typeLabels = {personal:'Personal Loan',auto:'Auto Loan',home:'Home/Mortgage',student:'Student Loan',business:'Business Loan'};
+      const date = new Date(tx.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      return `
+        <div class="tx-item">
+          <div class="tx-icon" style="background:rgba(201,168,76,.12);color:#C9A84C;font-size:1.1rem">💰</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:.875rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${typeLabels[tx.loanType]||tx.loanType||'Loan Application'}</div>
+            <div style="font-size:.75rem;color:var(--text-muted);margin-top:.15rem">${date} · Loan</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-weight:700;font-size:.9rem;color:${amtColor}">${tx.status==='approved'?'+':''}$${parseFloat(tx.amount||0).toFixed(2)}</div>
+            <span class="status-badge ${sc}">${tx.status}</span>
+          </div>
+        </div>`;
+    }
+    // ── Regular transaction entry ──
     const isCredit  = tx.type==='deposit' || tx.type==='fund';
     const iconBg    = isCredit ? 'rgba(0,133,124,.12)' : 'rgba(201,168,76,.12)';
     const iconColor = isCredit ? '#00A896' : '#C9A84C';
