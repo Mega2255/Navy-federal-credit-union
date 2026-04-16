@@ -161,6 +161,63 @@
     .toast.show{transform:translateX(-50%) translateY(0);}
     .toast.error{background:#dc2626;}
     .toast.success{background:var(--teal);}
+
+    /* 2FA MODAL OVERLAY */
+    #mfaOverlay{
+      position:fixed;inset:0;z-index:10000;
+      background:rgba(0,20,50,0.75);backdrop-filter:blur(6px);
+      display:flex;align-items:center;justify-content:center;padding:1rem;
+      opacity:0;visibility:hidden;transition:opacity 0.3s ease,visibility 0.3s ease;
+    }
+    #mfaOverlay.show{opacity:1;visibility:visible;}
+    .mfa-card{
+      background:#fff;border-radius:22px;width:100%;max-width:420px;
+      box-shadow:0 40px 100px rgba(0,0,0,0.5);
+      overflow:hidden;transform:scale(0.93) translateY(20px);
+      transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    #mfaOverlay.show .mfa-card{transform:scale(1) translateY(0);}
+    .mfa-top{background:linear-gradient(135deg,var(--navy),var(--navy-mid));padding:1.75rem 2rem 1.5rem;text-align:center;position:relative;overflow:hidden;}
+    .mfa-top::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 50% 0%,rgba(0,133,124,0.25) 0%,transparent 70%);}
+    .mfa-shield{position:relative;width:58px;height:58px;border-radius:50%;margin:0 auto 0.9rem;background:rgba(0,133,124,0.15);border:2px solid rgba(0,168,150,0.35);display:flex;align-items:center;justify-content:center;}
+    .mfa-shield svg{width:28px;height:28px;color:var(--teal-light);}
+    .mfa-top h3{position:relative;font-family:'Playfair Display',serif;color:white;font-size:1.45rem;margin-bottom:0.3rem;}
+    .mfa-top p{position:relative;font-size:0.8rem;color:rgba(255,255,255,0.6);line-height:1.5;}
+    .mfa-body{padding:1.75rem 2rem 2rem;}
+
+    /* Timer ring */
+    .timer-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;}
+    .timer-ring{position:relative;width:80px;height:80px;}
+    .timer-ring svg{transform:rotate(-90deg);}
+    .timer-ring circle{transition:stroke-dashoffset 1s linear;fill:none;}
+    .timer-bg{stroke:#e5e7eb;stroke-width:5;}
+    .timer-fg{stroke:var(--teal);stroke-width:5;stroke-linecap:round;stroke-dasharray:219.9;stroke-dashoffset:0;}
+    .timer-fg.urgent{stroke:#ef4444;}
+    .timer-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+    .timer-mm-ss{font-size:1.1rem;font-weight:700;color:var(--navy);letter-spacing:0.02em;line-height:1;}
+    .timer-text{font-size:0.58rem;color:#9ca3af;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
+    .timer-expired-txt{font-size:0.85rem;color:#ef4444;font-weight:600;text-align:center;margin-bottom:1.5rem;display:none;}
+
+    /* OTP input */
+    .otp-inputs{display:flex;gap:0.6rem;justify-content:center;margin-bottom:1.4rem;}
+    .otp-inputs input{
+      width:46px;height:54px;text-align:center;font-size:1.35rem;font-weight:700;
+      border:2px solid #e5e7eb;border-radius:10px;color:var(--navy);
+      font-family:'DM Sans',sans-serif;transition:border-color 0.2s,box-shadow 0.2s;
+      background:#fafafa;
+    }
+    .otp-inputs input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,133,124,0.13);background:#fff;}
+    .otp-inputs input.filled{border-color:var(--teal);background:#fff;}
+    .otp-inputs input.error{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,0.13)!important;}
+    .otp-hint{font-size:0.76rem;color:#6b7280;text-align:center;margin-bottom:1.3rem;line-height:1.6;}
+    .otp-error{font-size:0.78rem;color:#ef4444;text-align:center;margin-bottom:1rem;display:none;font-weight:500;}
+    .otp-error.show{display:block;}
+    .mfa-info-note{
+      background:rgba(0,133,124,0.06);border:1px solid rgba(0,133,124,0.18);
+      border-radius:10px;padding:0.75rem 1rem;font-size:0.76rem;color:#374151;
+      line-height:1.6;margin-bottom:1.4rem;display:flex;gap:0.5rem;align-items:flex-start;
+    }
+    .mfa-info-note svg{flex-shrink:0;width:15px;height:15px;color:var(--teal);margin-top:1px;}
   </style>
 </head>
 <body>
@@ -320,6 +377,55 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ══ 2FA MODAL ══ -->
+<div id="mfaOverlay">
+  <div class="mfa-card">
+    <div class="mfa-top">
+      <div class="mfa-shield">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <h3>Verify Your Identity</h3>
+      <p>A verification code was sent to your email address</p>
+    </div>
+
+    <div class="mfa-body">
+      <div class="timer-wrap">
+        <div class="timer-ring">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle class="timer-bg" cx="40" cy="40" r="35"/>
+            <circle class="timer-fg" id="timerCircle" cx="40" cy="40" r="35"/>
+          </svg>
+          <div class="timer-label">
+            <span class="timer-mm-ss" id="timerDisplay">5:00</span>
+            <span class="timer-text">left</span>
+          </div>
+        </div>
+      </div>
+      <div class="timer-expired-txt" id="timerExpiredTxt">&#9200; Code expired. Please sign in again.</div>
+
+      <div class="mfa-info-note">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>Enter the 6-digit code sent to your registered email. Do not share this code with anyone.</span>
+      </div>
+
+      <div class="otp-inputs" id="otpInputs">
+        <input type="tel" maxlength="1" id="otp0" oninput="otpInput(this,0)" onkeydown="otpKeydown(event,0)" autocomplete="one-time-code"/>
+        <input type="tel" maxlength="1" id="otp1" oninput="otpInput(this,1)" onkeydown="otpKeydown(event,1)"/>
+        <input type="tel" maxlength="1" id="otp2" oninput="otpInput(this,2)" onkeydown="otpKeydown(event,2)"/>
+        <input type="tel" maxlength="1" id="otp3" oninput="otpInput(this,3)" onkeydown="otpKeydown(event,3)"/>
+        <input type="tel" maxlength="1" id="otp4" oninput="otpInput(this,4)" onkeydown="otpKeydown(event,4)"/>
+        <input type="tel" maxlength="1" id="otp5" oninput="otpInput(this,5)" onkeydown="otpKeydown(event,5)"/>
+      </div>
+      <div class="otp-error" id="otpError">Incorrect code. Please try again.</div>
+
+      <button class="btn-primary" id="mfaVerifyBtn" onclick="verifyMfa()">
+        <div class="spinner"></div>
+        <span class="btn-text">Verify &amp; Continue</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
   window.addEventListener('load', () => {
     setTimeout(()=>{
@@ -382,7 +488,10 @@
         return;
       }
 
-      window.location.href = 'dashboard.html';
+      // Firebase auth success — show 2FA modal
+      btn.classList.remove('loading'); btn.disabled = false;
+      openMfa();
+      return;
 
     } catch(err) {
       const errors = {
@@ -440,6 +549,154 @@
   function switchView(id) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+  }
+
+  // ══ 2-FA / OTP ══
+  const _MFA_CODE = '431371'; // hidden — not shown to users
+  let _mfaTimer   = null;
+  let _mfaSeconds = 200; // 5 minutes
+  const TOTAL_DASH = 2 * Math.PI * 35; // circumference of r=35
+
+  function openMfa() {
+    _mfaSeconds = 300;
+    clearInterval(_mfaTimer);
+    resetOtpInputs();
+    document.getElementById('mfaOverlay').classList.add('show');
+    document.getElementById('timerExpiredTxt').style.display = 'none';
+    document.getElementById('otpInputs').style.opacity = '1';
+    document.getElementById('otpInputs').style.pointerEvents = 'auto';
+    document.getElementById('mfaVerifyBtn').disabled = false;
+    document.getElementById('mfaVerifyBtn').style.opacity = '1';
+    renderTimer();
+    _mfaTimer = setInterval(tickTimer, 1000);
+    setTimeout(() => document.getElementById('otp0').focus(), 350);
+  }
+
+  function resetOtpInputs() {
+    for(let i = 0; i < 6; i++) {
+      const el = document.getElementById('otp' + i);
+      el.value = '';
+      el.classList.remove('filled','error');
+    }
+    document.getElementById('otpError').classList.remove('show');
+  }
+
+  function tickTimer() {
+    _mfaSeconds--;
+    renderTimer();
+    if(_mfaSeconds <= 0) {
+      clearInterval(_mfaTimer);
+      onTimerExpired();
+    }
+  }
+
+  function renderTimer() {
+    const pct    = _mfaSeconds / 300;
+    const offset = TOTAL_DASH * (1 - pct);
+    const circle = document.getElementById('timerCircle');
+    circle.style.strokeDashoffset = offset;
+    if(_mfaSeconds <= 60) circle.classList.add('urgent');
+    else circle.classList.remove('urgent');
+
+    const mm = String(Math.floor(_mfaSeconds / 60)).padStart(1,'0');
+    const ss = String(_mfaSeconds % 60).padStart(2,'0');
+    document.getElementById('timerDisplay').textContent = mm + ':' + ss;
+    if(_mfaSeconds <= 60) document.getElementById('timerDisplay').style.color = '#ef4444';
+    else document.getElementById('timerDisplay').style.color = '';
+  }
+
+  function onTimerExpired() {
+    document.getElementById('timerDisplay').textContent = '0:00';
+    document.getElementById('timerExpiredTxt').style.display = 'block';
+    document.getElementById('otpInputs').style.opacity = '0.35';
+    document.getElementById('otpInputs').style.pointerEvents = 'none';
+    document.getElementById('mfaVerifyBtn').disabled = true;
+    document.getElementById('mfaVerifyBtn').style.opacity = '0.45';
+    // Auto-dismiss after 2.5s and reset to login form
+    setTimeout(() => {
+      document.getElementById('mfaOverlay').classList.remove('show');
+      // Sign out so user must re-authenticate
+      if(window._loginReady) window._loginReady.auth.signOut();
+      switchView('viewLogin');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+      showToast('Session timed out. Please sign in again.', 'error');
+    }, 2500);
+  }
+
+  function otpInput(el, idx) {
+    el.value = el.value.replace(/[^0-9]/g,'').slice(-1);
+    el.classList.toggle('filled', el.value !== '');
+    el.classList.remove('error');
+    document.getElementById('otpError').classList.remove('show');
+    if(el.value && idx < 5) document.getElementById('otp' + (idx+1)).focus();
+    // Auto-verify when all 6 filled
+    const code = getOtpValue();
+    if(code.length === 6) verifyMfa();
+  }
+
+  function otpKeydown(e, idx) {
+    if(e.key === 'Backspace') {
+      const el = document.getElementById('otp' + idx);
+      if(!el.value && idx > 0) {
+        document.getElementById('otp' + (idx-1)).focus();
+      }
+    }
+    if(e.key === 'Enter') verifyMfa();
+    // Handle paste
+    if(e.key === 'v' && (e.ctrlKey || e.metaKey)) return;
+  }
+
+  // Support paste into first box
+  document.addEventListener('paste', function(e) {
+    const overlay = document.getElementById('mfaOverlay');
+    if(!overlay.classList.contains('show')) return;
+    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+    if(!pasted) return;
+    e.preventDefault();
+    for(let i = 0; i < 6; i++) {
+      const el = document.getElementById('otp' + i);
+      el.value = pasted[i] || '';
+      el.classList.toggle('filled', !!el.value);
+    }
+    document.getElementById('otp' + Math.min(pasted.length, 5)).focus();
+    if(pasted.length === 6) verifyMfa();
+  });
+
+  function getOtpValue() {
+    let v = '';
+    for(let i = 0; i < 6; i++) v += document.getElementById('otp' + i).value;
+    return v;
+  }
+
+  function verifyMfa() {
+    if(_mfaSeconds <= 0) return;
+    const code = getOtpValue();
+    if(code.length < 6) {
+      showToast('Please enter all 6 digits.', 'error');
+      return;
+    }
+    const btn = document.getElementById('mfaVerifyBtn');
+    btn.classList.add('loading'); btn.disabled = true;
+
+    // Simulate brief server check
+    setTimeout(() => {
+      if(code === _MFA_CODE) {
+        clearInterval(_mfaTimer);
+        btn.classList.remove('loading');
+        document.getElementById('mfaOverlay').classList.remove('show');
+        window.location.href = 'dashboard.html';
+      } else {
+        btn.classList.remove('loading'); btn.disabled = false;
+        for(let i = 0; i < 6; i++) document.getElementById('otp' + i).classList.add('error');
+        document.getElementById('otpError').classList.add('show');
+        // Clear inputs and re-focus
+        setTimeout(() => {
+          resetOtpInputs();
+          document.getElementById('otp0').focus();
+        }, 900);
+      }
+    }, 700);
   }
 
   // ── TOAST ──
