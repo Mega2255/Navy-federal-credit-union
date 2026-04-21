@@ -10,6 +10,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD_yrAE0WCnNPjc_2FZ4ZhLG2AJRFA6V2c",
@@ -17,17 +18,19 @@
       projectId: "navy-credit-union-2f63d",
       storageBucket: "navy-credit-union-2f63d.firebasestorage.app",
       messagingSenderId: "176577787303",
-      appId: "1:176577787303:web:7281f340b470daeb45f282"
+      appId: "1:176577787303:web:7281f340b470daeb45f282",
+      databaseURL: "https://navy-credit-union-2f63d-default-rtdb.firebaseio.com"
     };
 
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db   = getDatabase(app);
 
     // Always sign out any existing session when the login page loads,
     // so returning users and new users always see the login form.
     signOut(auth);
 
-    window._loginReady = { auth, signInWithEmailAndPassword, sendPasswordResetEmail };
+    window._loginReady = { auth, db, ref, get, signInWithEmailAndPassword, sendPasswordResetEmail };
   </script>
 
   <style>
@@ -476,12 +479,23 @@
     const btn = document.getElementById('loginBtn');
     btn.classList.add('loading'); btn.disabled = true;
 
-    const { auth, signInWithEmailAndPassword } = window._loginReady;
+    const { auth, db, ref, get, signInWithEmailAndPassword } = window._loginReady;
 
     try {
       const cred = await signInWithEmailAndPassword(auth, emailEl.value.trim(), pwdEl.value);
+      const uid  = cred.user.uid;
 
-      if(!cred.user.emailVerified) {
+      // Two valid paths to be considered verified:
+      // 1. Admin-created users: have verified:true written to DB directly.
+      // 2. Self-registered users: Firebase Auth emailVerified is true after
+      //    they click the verification link in their email.
+      const snap         = await get(ref(db, `users/${uid}/verified`));
+      const dbVerified   = snap.exists() ? snap.val() : false;
+      await cred.user.reload().catch(() => {});
+      const authVerified = auth.currentUser ? auth.currentUser.emailVerified : false;
+      const verified     = dbVerified || authVerified;
+
+      if(!verified) {
         showToast('Please verify your email first. Check your inbox.', 'error');
         await auth.signOut();
         btn.classList.remove('loading'); btn.disabled = false;
@@ -710,5 +724,15 @@
     t._timer = setTimeout(() => t.classList.remove('show'), duration);
   }
 </script>
+<!-- Begin of Chaport Live Chat code -->
+<script type="text/javascript">
+(function(w,d,v3){
+w.chaportConfig = {
+  appId : '69e74e87b51a89099604f483',
+};
+
+if(w.chaport)return;v3=w.chaport={};v3._q=[];v3._l={};v3.q=function(){v3._q.push(arguments)};v3.on=function(e,fn){if(!v3._l[e])v3._l[e]=[];v3._l[e].push(fn)};var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://app.chaport.com/javascripts/insert.js';var ss=d.getElementsByTagName('script')[0];ss.parentNode.insertBefore(s,ss)})(window, document);
+</script>
+<!-- End of Chaport Live Chat code -->
 </body>
 </html>
