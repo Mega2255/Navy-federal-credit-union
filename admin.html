@@ -95,6 +95,19 @@
     .tab-filter{padding:.4rem .9rem;border-radius:8px;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:transparent;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;transition:all .2s}
     .tab-filter.active,.tab-filter:hover{background:rgba(0,133,124,.15);border-color:rgba(0,133,124,.4);color:var(--teal-light)}
 
+    /* USER TX HISTORY MODAL */
+    .modal-box-xl{max-width:760px}
+    .user-tx-row{display:flex;align-items:center;gap:.75rem;padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .user-tx-row:last-child{border-bottom:none}
+    .date-edit-input{background:rgba(255,255,255,.07);border:1px solid rgba(0,133,124,.4);border-radius:7px;padding:.3rem .6rem;color:white;font-size:.8rem;font-family:'DM Sans',sans-serif;width:160px}
+    .date-edit-input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(0,133,124,.15)}
+    .btn-edit-date{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.25);padding:.28rem .65rem;border-radius:7px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+    .btn-edit-date:hover{background:rgba(201,168,76,.25)}
+    .btn-save-date{background:rgba(0,133,124,.2);color:var(--teal-light);border:1px solid rgba(0,133,124,.35);padding:.28rem .65rem;border-radius:7px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+    .btn-save-date:hover{background:rgba(0,133,124,.4)}
+    .btn-cancel-date{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);padding:.28rem .55rem;border-radius:7px;font-size:.72rem;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+    .btn-cancel-date:hover{background:rgba(255,255,255,.12);color:white}
+
     /* SEARCH */
     .search-input{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.55rem 1rem .55rem 2.5rem;color:white;font-size:.85rem;font-family:'DM Sans',sans-serif;width:220px}
     .search-input:focus{outline:none;border-color:var(--teal)}
@@ -124,6 +137,15 @@
       .fund-grid{grid-template-columns:1fr !important}
       .page-padding{padding:1rem !important}
     }
+    @keyframes spin360{to{transform:rotate(360deg)}}
+
+    /* CREATE USER SUCCESS MODAL */
+    .cu-success-overlay{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.85);backdrop-filter:blur(6px)}
+    .cu-success-overlay.open{display:flex}
+    .cu-success-box{background:#161f2e;border:1px solid rgba(0,133,124,.3);border-radius:22px;padding:2.25rem;width:100%;max-width:420px;text-align:center}
+    .cu-check-ring{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-light));display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;box-shadow:0 8px 30px rgba(0,133,124,.45)}
+    .cu-acct-chip{background:rgba(0,133,124,.12);border:1px solid rgba(0,133,124,.3);border-radius:10px;padding:.65rem 1.25rem;display:inline-block;font-family:'Space Grotesk',monospace;font-size:1.05rem;font-weight:700;color:var(--teal-light);letter-spacing:.12em;margin:.75rem 0}
+
     @media(max-width:480px){
       .stats-grid{grid-template-columns:1fr !important}
       .modal-box{padding:1.25rem}
@@ -196,6 +218,9 @@
       <a class="nav-item" onclick="showPage('loans')" id="nav-loans">
         <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Loans
         <span style="background:rgba(201,168,76,.15);color:var(--gold);font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:99px;margin-left:auto" id="loan-req-count">0</span>
+      </a>
+      <a class="nav-item" onclick="showPage('createuser')" id="nav-createuser" style="margin-top:.5rem;border-top:1px solid rgba(255,255,255,.06);padding-top:.85rem">
+        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>Create User
       </a>
     </nav>
     <div style="padding:1rem;border-top:1px solid rgba(255,255,255,.06)">
@@ -496,6 +521,185 @@
         </div>
       </div>
 
+      <!-- ════════════════ CREATE USER ════════════════ -->
+      <div class="page-section" id="page-createuser">
+        <div style="margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+          <div>
+            <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:.25rem">Create User Account</h2>
+            <p style="color:rgba(255,255,255,.4);font-size:.855rem">Create a new user account. The user is automatically verified and can log in immediately — no email confirmation required.</p>
+          </div>
+          <div style="background:rgba(0,133,124,.1);border:1px solid rgba(0,133,124,.25);border-radius:10px;padding:.65rem 1rem;display:flex;align-items:center;gap:.5rem">
+            <svg width="14" height="14" fill="none" stroke="#00A896" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span style="font-size:.75rem;font-weight:600;color:var(--teal-light)">Auto-Verified · No Email Required</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem" class="fund-grid">
+          <!-- LEFT: Personal + Address -->
+          <div class="card">
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:1.25rem">PERSONAL INFORMATION</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem" class="fund-grid">
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">First Name <span style="color:#ff6b7a">*</span></label>
+                <input id="cu-firstName" class="input-field" placeholder="John"/>
+              </div>
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Last Name <span style="color:#ff6b7a">*</span></label>
+                <input id="cu-lastName" class="input-field" placeholder="Doe"/>
+              </div>
+            </div>
+            <div style="margin-bottom:1rem">
+              <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Date of Birth <span style="color:#ff6b7a">*</span></label>
+              <input id="cu-dob" type="date" class="input-field" style="color-scheme:dark"/>
+            </div>
+            <div style="margin-bottom:1rem">
+              <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Gender</label>
+              <select id="cu-gender" class="input-field">
+                <option value="">Select gender</option>
+                <option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option>
+              </select>
+            </div>
+            <div style="margin-bottom:1rem">
+              <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Account Type <span style="color:#ff6b7a">*</span></label>
+              <select id="cu-accountType" class="input-field">
+                <option value="">Select account type</option>
+                <option>Savings Account</option>
+                <option>Checking Account</option>
+                <option>Money Market Account</option>
+                <option>Certificate of Deposit (CD)</option>
+              </select>
+            </div>
+            <div style="margin-bottom:1.25rem">
+              <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Phone Number</label>
+              <input id="cu-phone" class="input-field" placeholder="+1 (555) 000-0000"/>
+            </div>
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:1rem">ADDRESS</div>
+            <div style="margin-bottom:1rem">
+              <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Street Address</label>
+              <input id="cu-address" class="input-field" placeholder="123 Main Street"/>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem" class="fund-grid">
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">City</label>
+                <input id="cu-city" class="input-field" placeholder="Washington"/>
+              </div>
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">State / Region</label>
+                <input id="cu-state" class="input-field" placeholder="DC"/>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" class="fund-grid">
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">ZIP / Postal Code</label>
+                <input id="cu-zip" class="input-field" placeholder="20001" maxlength="10"/>
+              </div>
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Country</label>
+                <select id="cu-country" class="input-field">
+                  <option value="">Select</option>
+                  <option>Afghanistan</option><option>Albania</option><option>Algeria</option><option>Argentina</option><option>Armenia</option><option>Australia</option><option>Austria</option><option>Azerbaijan</option><option>Bahamas</option><option>Bangladesh</option><option>Belgium</option><option>Brazil</option><option>Canada</option><option>Chile</option><option>China</option><option>Colombia</option><option>Croatia</option><option>Czech Republic</option><option>Denmark</option><option>Egypt</option><option>Ethiopia</option><option>Finland</option><option>France</option><option>Germany</option><option>Ghana</option><option>Greece</option><option>Hungary</option><option>India</option><option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option><option>Israel</option><option>Italy</option><option>Jamaica</option><option>Japan</option><option>Jordan</option><option>Kenya</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option><option>Netherlands</option><option>New Zealand</option><option>Nigeria</option><option>Norway</option><option>Pakistan</option><option>Philippines</option><option>Poland</option><option>Portugal</option><option>Romania</option><option>Russia</option><option>Saudi Arabia</option><option>Senegal</option><option>Singapore</option><option>South Africa</option><option>South Korea</option><option>Spain</option><option>Sri Lanka</option><option>Sweden</option><option>Switzerland</option><option>Tanzania</option><option>Thailand</option><option>Turkey</option><option>Uganda</option><option>Ukraine</option><option>United Arab Emirates</option><option>United Kingdom</option><option selected>United States</option><option>Uruguay</option><option>Venezuela</option><option>Vietnam</option><option>Zambia</option><option>Zimbabwe</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Credentials + Security + Balance + Submit -->
+          <div>
+            <div class="card" style="margin-bottom:1.25rem">
+              <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:1.25rem">LOGIN CREDENTIALS</div>
+              <div style="margin-bottom:1rem">
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Email Address <span style="color:#ff6b7a">*</span></label>
+                <input id="cu-email" type="email" class="input-field" placeholder="john.doe@example.com"/>
+              </div>
+              <div style="margin-bottom:1rem">
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Username <span style="color:#ff6b7a">*</span></label>
+                <input id="cu-username" class="input-field" placeholder="johndoe2024"/>
+              </div>
+              <div style="margin-bottom:1rem">
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Password <span style="color:#ff6b7a">*</span></label>
+                <div style="position:relative">
+                  <input id="cu-password" type="password" class="input-field" style="padding-right:2.5rem" placeholder="Minimum 8 characters"/>
+                  <button type="button" onclick="toggleCuPwd('cu-password',this)" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);padding:.2rem">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div style="margin-bottom:1rem">
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Confirm Password <span style="color:#ff6b7a">*</span></label>
+                <div style="position:relative">
+                  <input id="cu-confirmPassword" type="password" class="input-field" style="padding-right:2.5rem" placeholder="Re-enter password"/>
+                  <button type="button" onclick="toggleCuPwd('cu-confirmPassword',this)" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);padding:.2rem">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Transaction PIN <span style="color:#ff6b7a">*</span> <span style="font-weight:400;color:rgba(255,255,255,.28)">(4–6 digits)</span></label>
+                <div style="position:relative">
+                  <input id="cu-transactionPin" type="password" class="input-field" style="padding-right:2.5rem" placeholder="e.g. 1234" maxlength="6" inputmode="numeric"/>
+                  <button type="button" onclick="toggleCuPwd('cu-transactionPin',this)" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);padding:.2rem">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:1.25rem">
+              <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:1.25rem">SECURITY</div>
+              <div style="margin-bottom:1rem">
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Security Question</label>
+                <select id="cu-secQuestion" class="input-field">
+                  <option value="">Select a question</option>
+                  <option>What was the name of your first pet?</option>
+                  <option>What city were you born in?</option>
+                  <option>What is your mother's maiden name?</option>
+                  <option>What was the name of your elementary school?</option>
+                  <option>What was your childhood nickname?</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Security Answer</label>
+                <input id="cu-secAnswer" class="input-field" placeholder="Your answer"/>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:1.25rem">
+              <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;color:rgba(255,255,255,.35);margin-bottom:1rem">INITIAL BALANCE <span style="color:rgba(255,255,255,.25);font-weight:400">(Optional)</span></div>
+              <div style="position:relative">
+                <span style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.4);font-weight:600">$</span>
+                <input id="cu-initialBalance" type="number" class="input-field" style="padding-left:2rem" placeholder="0.00" min="0"/>
+              </div>
+              <p style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.5rem">Starting balance for the new account.</p>
+            </div>
+
+            <button onclick="createUserAccount()" class="btn-primary" style="width:100%;padding:.9rem;font-size:.95rem" id="cu-submit-btn">
+              <span id="cu-btn-text">✦ Create Account</span>
+              <span id="cu-btn-spinner" style="display:none">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="animation:spin360 .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:.4rem"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                Creating account…
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CREATE USER SUCCESS MODAL -->
+<div class="cu-success-overlay" id="cu-success-modal">
+  <div class="cu-success-box">
+    <div class="cu-check-ring">
+      <svg width="34" height="34" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:700;color:white;margin-bottom:.4rem">Account Created!</h3>
+    <p style="font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:.25rem">The user can now log in immediately.</p>
+    <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:1rem" id="cu-success-email"></div>
+    <div class="cu-acct-chip" id="cu-success-acct">0000000000</div>
+    <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem;margin-bottom:1.25rem;text-align:left" id="cu-success-details"></div>
+    <div style="display:flex;gap:.75rem">
+      <button onclick="closeCuSuccessModal()" class="btn-xs btn-view" style="flex:1;padding:.7rem;font-size:.85rem">Close</button>
+      <button onclick="closeCuSuccessModal();showPage('users')" class="btn-primary" style="flex:2;padding:.7rem;font-size:.9rem">View Users →</button>
     </div>
   </div>
 </div>
@@ -572,6 +776,13 @@
           <input id="edit-balance" type="number" class="input-field" style="padding-left:2rem" placeholder="0.00"/>
         </div>
       </div>
+      <div style="grid-column:1/-1">
+        <label style="font-size:.78rem;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem">Member Since (Join Date)</label>
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+          <input id="edit-join-date" type="month" class="input-field" style="max-width:220px" title="Pick the month and year the user joined"/>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.35)">Displays as "Member since <span id="edit-join-preview" style="color:var(--teal-light);font-weight:600">—</span>" on user dashboard</div>
+        </div>
+      </div>
     </div>
     <div style="display:flex;gap:.75rem">
       <button onclick="closeUserEdit()" class="btn-xs btn-block" style="flex:1;padding:.7rem;font-size:.85rem">Cancel</button>
@@ -581,6 +792,32 @@
 </div>
 
 <div id="toast" class="toast"></div>
+
+<!-- USER TRANSACTION HISTORY MODAL -->
+<div class="modal" id="user-tx-history-modal">
+  <div class="modal-overlay" onclick="closeUserTxHistory()"></div>
+  <div class="modal-box modal-box-xl" style="max-width:760px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700" id="user-tx-history-title">Transaction History</h3>
+        <p style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.2rem" id="user-tx-history-sub">All transactions for this account</p>
+      </div>
+      <button onclick="closeUserTxHistory()" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+      <button class="tab-filter active" onclick="filterUserTxHistory('all',this)">All</button>
+      <button class="tab-filter" onclick="filterUserTxHistory('pending',this)">Pending</button>
+      <button class="tab-filter" onclick="filterUserTxHistory('approved',this)">Approved</button>
+      <button class="tab-filter" onclick="filterUserTxHistory('transfer',this)">Transfers</button>
+      <button class="tab-filter" onclick="filterUserTxHistory('deposit',this)">Deposits</button>
+    </div>
+    <div id="user-tx-history-list" style="max-height:60vh;overflow-y:auto;padding-right:.25rem"></div>
+    <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:.75rem;color:rgba(255,255,255,.35)" id="user-tx-history-count">0 transactions</span>
+      <button onclick="closeUserTxHistory()" class="btn-xs btn-view" style="padding:.5rem 1.2rem">Close</button>
+    </div>
+  </div>
+</div>
 
 <!-- CARD CATALOG MODAL -->
 <div class="modal" id="card-catalog-modal">
@@ -929,6 +1166,7 @@
         <td><div style="display:flex;gap:.4rem;flex-wrap:wrap">
           <button class="btn-xs btn-approve" onclick="quickFund('${u.uid}')">$ Fund</button>
           <button class="btn-xs btn-view" onclick="openUserEdit('${u.uid}')">✎ Edit</button>
+          <button class="btn-xs btn-view" onclick="openUserTxHistory('${u.uid}')" style="background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.25)">📋 History</button>
           ${blockBtn}
         </div></td>
       </tr>`;
@@ -964,6 +1202,30 @@
     document.getElementById('edit-acct').value = u.accountNumber || '';
     document.getElementById('edit-acct-type').value = u.accountType || 'Checking';
     document.getElementById('edit-balance').value = parseFloat(u.balance || 0).toFixed(2);
+
+    // Populate join date (month input expects "YYYY-MM")
+    const joinInput = document.getElementById('edit-join-date');
+    const joinPreview = document.getElementById('edit-join-preview');
+    if (u.createdAt) {
+      const d = new Date(u.createdAt);
+      const pad = n => String(n).padStart(2,'0');
+      joinInput.value = `${d.getFullYear()}-${pad(d.getMonth()+1)}`;
+      joinPreview.textContent = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    } else {
+      joinInput.value = '';
+      joinPreview.textContent = '—';
+    }
+    // Live preview as admin changes the month
+    joinInput.oninput = function() {
+      if (this.value) {
+        const [yr, mo] = this.value.split('-');
+        const d = new Date(parseInt(yr), parseInt(mo)-1, 1);
+        joinPreview.textContent = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+      } else {
+        joinPreview.textContent = '—';
+      }
+    };
+
     document.getElementById('user-edit-modal').classList.add('open');
   };
 
@@ -979,6 +1241,12 @@
       accountType: document.getElementById('edit-acct-type').value,
       balance: parseFloat(document.getElementById('edit-balance').value) || 0,
     };
+    // Save join date if provided
+    const joinVal = document.getElementById('edit-join-date').value;
+    if (joinVal) {
+      const [yr, mo] = joinVal.split('-');
+      updates.createdAt = new Date(parseInt(yr), parseInt(mo)-1, 1).getTime();
+    }
     try {
       await update(ref(db, `users/${uid}`), updates);
       closeUserEdit();
@@ -1407,6 +1675,324 @@
     });
   };
 
+  // ── USER TRANSACTION HISTORY ──
+  let currentHistoryUid = null;
+  let currentHistoryFilter = 'all';
+
+  window.openUserTxHistory = function(uid) {
+    const u = allUsers.find(x => x.uid === uid);
+    if (!u) return;
+    currentHistoryUid = uid;
+    currentHistoryFilter = 'all';
+    const name = `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.email || uid;
+    document.getElementById('user-tx-history-title').textContent = `${name} — Transactions`;
+    document.getElementById('user-tx-history-sub').textContent = u.email || '';
+    document.querySelectorAll('#user-tx-history-modal .tab-filter').forEach(b => b.classList.remove('active'));
+    const first = document.querySelector('#user-tx-history-modal .tab-filter');
+    if (first) first.classList.add('active');
+    renderUserTxHistoryList();
+    document.getElementById('user-tx-history-modal').classList.add('open');
+  };
+
+  window.closeUserTxHistory = function() {
+    document.getElementById('user-tx-history-modal').classList.remove('open');
+    currentHistoryUid = null;
+  };
+
+  window.filterUserTxHistory = function(filter, btn) {
+    currentHistoryFilter = filter;
+    document.querySelectorAll('#user-tx-history-modal .tab-filter').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderUserTxHistoryList();
+  };
+
+  function renderUserTxHistoryList() {
+    const container = document.getElementById('user-tx-history-list');
+    if (!currentHistoryUid) return;
+    let list = allTx.filter(t => t.userId === currentHistoryUid);
+    if (currentHistoryFilter === 'pending') list = list.filter(t => t.status === 'pending');
+    else if (currentHistoryFilter === 'approved') list = list.filter(t => t.status === 'approved');
+    else if (currentHistoryFilter === 'transfer') list = list.filter(t => t.type === 'transfer');
+    else if (currentHistoryFilter === 'deposit') list = list.filter(t => t.type === 'deposit' || t.type === 'fund');
+    const countEl = document.getElementById('user-tx-history-count');
+    if (countEl) countEl.textContent = `${list.length} transaction${list.length !== 1 ? 's' : ''}`;
+    if (!list.length) {
+      container.innerHTML = `<div style="text-align:center;padding:2.5rem;color:rgba(255,255,255,.3)"><div style="font-size:2rem;margin-bottom:.75rem">📭</div><p style="font-size:.875rem">No transactions found</p></div>`;
+      return;
+    }
+    container.innerHTML = list.map(tx => {
+      const isCredit = tx.type === 'deposit' || tx.type === 'fund';
+      const typeIcon = tx.type === 'deposit' ? '↓' : tx.type === 'fund' ? '★' : '↑';
+      const typeColor = isCredit ? '#4ade80' : '#ff6b7a';
+      const statusCls = `badge-${tx.status}`;
+      const dateDisplay = tx.createdAt ? new Date(tx.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+      const timeDisplay = tx.createdAt ? new Date(tx.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+      const isoLocal = tx.createdAt ? (() => {
+        const d = new Date(tx.createdAt);
+        const pad = n => String(n).padStart(2,'0');
+        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      })() : '';
+      return `
+        <div class="user-tx-row" id="utxrow-${tx.id}">
+          <div style="width:38px;height:38px;border-radius:10px;background:${isCredit?'rgba(0,133,124,.15)':'rgba(201,168,76,.12)'};display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:${typeColor};flex-shrink:0">${typeIcon}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;font-size:.855rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${tx.description || tx.type || '—'}</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.1rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+              <span id="utx-date-display-${tx.id}">${dateDisplay}${timeDisplay ? ' · ' + timeDisplay : ''}</span>
+              <span style="font-size:.65rem;color:rgba(255,255,255,.2)">· ${(tx.type||'').toUpperCase()}</span>
+            </div>
+            <div id="utx-date-editor-${tx.id}" style="display:none;margin-top:.5rem;align-items:center;gap:.5rem;flex-wrap:wrap">
+              <input type="datetime-local" class="date-edit-input" id="utx-date-input-${tx.id}" value="${isoLocal}"/>
+              <button class="btn-save-date" onclick="saveUserTxDate('${tx.id}')">Save</button>
+              <button class="btn-cancel-date" onclick="cancelUserTxDateEdit('${tx.id}')">Cancel</button>
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">
+            <div style="font-weight:700;font-size:.9rem;color:${isCredit?'#4ade80':'rgba(255,255,255,.85)'}">
+              ${isCredit?'+':'-'}$${parseFloat(tx.amount||0).toFixed(2)}
+            </div>
+            <span class="badge ${statusCls}">${tx.status}</span>
+            <button class="btn-edit-date" id="utx-edit-btn-${tx.id}" onclick="editUserTxDate('${tx.id}')">✎ Edit Date</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  window.editUserTxDate = function(txId) {
+    const editor = document.getElementById(`utx-date-editor-${txId}`);
+    const btn = document.getElementById(`utx-edit-btn-${txId}`);
+    if (editor) editor.style.display = 'flex';
+    if (btn) btn.style.display = 'none';
+  };
+
+  window.cancelUserTxDateEdit = function(txId) {
+    const editor = document.getElementById(`utx-date-editor-${txId}`);
+    const btn = document.getElementById(`utx-edit-btn-${txId}`);
+    if (editor) editor.style.display = 'none';
+    if (btn) btn.style.display = '';
+    const tx = allTx.find(t => t.id === txId);
+    if (tx && tx.createdAt) {
+      const d = new Date(tx.createdAt);
+      const pad = n => String(n).padStart(2,'0');
+      const iso = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      const input = document.getElementById(`utx-date-input-${txId}`);
+      if (input) input.value = iso;
+    }
+  };
+
+  window.saveUserTxDate = async function(txId) {
+    const input = document.getElementById(`utx-date-input-${txId}`);
+    if (!input || !input.value) { showToast('Please select a valid date', 'error'); return; }
+    const newTimestamp = new Date(input.value).getTime();
+    if (isNaN(newTimestamp)) { showToast('Invalid date format', 'error'); return; }
+    try {
+      await update(ref(db, `transactions/${txId}`), { createdAt: newTimestamp });
+      const txIndex = allTx.findIndex(t => t.id === txId);
+      if (txIndex !== -1) allTx[txIndex].createdAt = newTimestamp;
+      const displayEl = document.getElementById(`utx-date-display-${txId}`);
+      if (displayEl) {
+        const d = new Date(newTimestamp);
+        const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const timeStr = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        displayEl.textContent = `${dateStr} · ${timeStr}`;
+      }
+      cancelUserTxDateEdit(txId);
+      showToast('Transaction date updated ✓ — reflects on user dashboard', 'success');
+    } catch (e) { showToast(e.message, 'error'); }
+  };
+
+
+  // ══════════════════════════════════════════════════
+  // CREATE USER — Firebase REST API (auto-verified)
+  // ══════════════════════════════════════════════════
+  const FB_API_KEY = 'AIzaSyD_yrAE0WCnNPjc_2FZ4ZhLG2AJRFA6V2c';
+
+  function generateAccountNumber() {
+    return Array.from({length: 10}, () => Math.floor(Math.random() * 10)).join('');
+  }
+
+  window.toggleCuPwd = function(id, btn) {
+    const inp = document.getElementById(id);
+    if (!inp) return;
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.style.color = inp.type === 'text' ? 'var(--teal-light)' : 'rgba(255,255,255,.4)';
+  };
+
+  window.createUserAccount = async function() {
+    // ── Collect values ──
+    const firstName       = (document.getElementById('cu-firstName').value || '').trim();
+    const lastName        = (document.getElementById('cu-lastName').value  || '').trim();
+    const email           = (document.getElementById('cu-email').value     || '').trim();
+    const username        = (document.getElementById('cu-username').value  || '').trim();
+    const password        = (document.getElementById('cu-password').value  || '');
+    const confirmPwd      = (document.getElementById('cu-confirmPassword').value || '');
+    const pin             = (document.getElementById('cu-transactionPin').value || '').trim();
+    const dob             = (document.getElementById('cu-dob').value       || '');
+    const gender          = (document.getElementById('cu-gender').value    || '');
+    const accountType     = (document.getElementById('cu-accountType').value || '');
+    const phone           = (document.getElementById('cu-phone').value     || '').trim();
+    const address         = (document.getElementById('cu-address').value   || '').trim();
+    const city            = (document.getElementById('cu-city').value      || '').trim();
+    const state           = (document.getElementById('cu-state').value     || '').trim();
+    const zip             = (document.getElementById('cu-zip').value       || '').trim();
+    const country         = (document.getElementById('cu-country').value   || '');
+    const secQuestion     = (document.getElementById('cu-secQuestion').value || '');
+    const secAnswer       = (document.getElementById('cu-secAnswer').value || '').trim();
+    const initialBalance  = parseFloat(document.getElementById('cu-initialBalance').value) || 0;
+
+    // ── Validation ──
+    if (!firstName)       { showToast('First name is required', 'error'); return; }
+    if (!lastName)        { showToast('Last name is required', 'error'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Valid email address is required', 'error'); return; }
+    if (!username || username.length < 4) { showToast('Username must be at least 4 characters', 'error'); return; }
+    if (!password || password.length < 8) { showToast('Password must be at least 8 characters', 'error'); return; }
+    if (password !== confirmPwd)          { showToast('Passwords do not match', 'error'); return; }
+    if (!pin || !/^\d{4,6}$/.test(pin)) { showToast('Transaction PIN must be 4–6 digits', 'error'); return; }
+    if (!dob)             { showToast('Date of birth is required', 'error'); return; }
+    if (!accountType)     { showToast('Please select an account type', 'error'); return; }
+
+    // ── UI: loading state ──
+    const btn = document.getElementById('cu-submit-btn');
+    document.getElementById('cu-btn-text').style.display = 'none';
+    document.getElementById('cu-btn-spinner').style.display = 'inline';
+    btn.disabled = true;
+
+    try {
+      // ── STEP 1: Create user via Firebase REST API ──
+      const signUpRes = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FB_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, returnSecureToken: true })
+        }
+      );
+      const signUpData = await signUpRes.json();
+
+      if (signUpData.error) {
+        const errMap = {
+          'EMAIL_EXISTS':            'This email is already registered.',
+          'INVALID_EMAIL':           'Invalid email address format.',
+          'WEAK_PASSWORD : Password should be at least 6 characters': 'Password too weak — use 8+ characters.',
+          'OPERATION_NOT_ALLOWED':   'Email/password sign-up is disabled in Firebase.',
+          'TOO_MANY_ATTEMPTS_TRY_LATER': 'Too many attempts. Please wait and try again.'
+        };
+        const msg = errMap[signUpData.error.message] || ('Firebase error: ' + signUpData.error.message);
+        throw new Error(msg);
+      }
+
+      const newUid   = signUpData.localId;
+      const idToken  = signUpData.idToken;
+
+      // ── STEP 2: Mark emailVerified = true via REST update ──
+      const verifyRes = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${FB_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken, emailVerified: true, returnSecureToken: false })
+        }
+      );
+      const verifyData = await verifyRes.json();
+      if (verifyData.error) {
+        // Non-fatal: account still usable, just log it
+        console.warn('[CreateUser] emailVerified update warning:', verifyData.error.message);
+      }
+
+      // ── STEP 3: Update Firebase Auth displayName ──
+      await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:update?key=${FB_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ idToken, displayName: `${firstName} ${lastName}`, returnSecureToken: false })
+        }
+      );
+
+      // ── STEP 4: Write user record to Realtime Database ──
+      const accountNumber = generateAccountNumber();
+      const userData = {
+        uid: newUid,
+        firstName, lastName, email, username, phone,
+        dob, gender, accountType,
+        address, city, state, zip, country,
+        secQuestion, secAnswer,
+        transactionPin: pin,
+        accountNumber,
+        balance: initialBalance,
+        role: 'user',
+        verified: true,
+        adminCreated: true,
+        createdAt: Date.now()
+      };
+
+      await set(ref(db, `users/${newUid}`), userData);
+
+      // ── STEP 5: If initial balance > 0, record a fund transaction ──
+      if (initialBalance > 0) {
+        await push(ref(db, 'transactions'), {
+          userId: newUid,
+          userEmail: email,
+          userName: `${firstName} ${lastName}`,
+          type: 'fund',
+          status: 'approved',
+          amount: initialBalance,
+          description: 'Account opening balance',
+          createdAt: Date.now()
+        });
+      }
+
+      // ── STEP 6: Show success modal ──
+      document.getElementById('cu-success-email').textContent = email;
+      document.getElementById('cu-success-acct').textContent  = accountNumber;
+      document.getElementById('cu-success-details').innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:.45rem">
+          <div style="display:flex;justify-content:space-between;font-size:.78rem">
+            <span style="color:rgba(255,255,255,.4)">Full Name</span>
+            <span style="font-weight:600">${firstName} ${lastName}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.78rem">
+            <span style="color:rgba(255,255,255,.4)">Account Type</span>
+            <span style="font-weight:600">${accountType}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.78rem">
+            <span style="color:rgba(255,255,255,.4)">Starting Balance</span>
+            <span style="font-weight:600;color:#4ade80">$${initialBalance.toFixed(2)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.78rem">
+            <span style="color:rgba(255,255,255,.4)">Verification</span>
+            <span style="font-weight:600;color:var(--teal-light)">✓ Auto-verified</span>
+          </div>
+        </div>`;
+      document.getElementById('cu-success-modal').classList.add('open');
+
+      // ── Reset form ──
+      ['cu-firstName','cu-lastName','cu-email','cu-username','cu-password','cu-confirmPassword',
+       'cu-transactionPin','cu-dob','cu-phone','cu-address','cu-city','cu-state','cu-zip',
+       'cu-secAnswer','cu-initialBalance'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      ['cu-gender','cu-accountType','cu-secQuestion','cu-country'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.selectedIndex = 0;
+      });
+
+      showToast(`Account created for ${firstName} ${lastName} ✓ — auto-verified`, 'success');
+
+    } catch (e) {
+      showToast(e.message || 'Failed to create account. Please try again.', 'error');
+    } finally {
+      document.getElementById('cu-btn-text').style.display = 'inline';
+      document.getElementById('cu-btn-spinner').style.display = 'none';
+      btn.disabled = false;
+    }
+  };
+
+  window.closeCuSuccessModal = function() {
+    document.getElementById('cu-success-modal').classList.remove('open');
+  };
+
   window.authSignOut = function() {
     import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(m => {
       m.signOut(auth).then(() => window.location.href = 'admin-login.html');
@@ -1428,7 +2014,7 @@
     document.getElementById('sidebar-overlay').classList.remove('show');
   }
 
-  const pageTitles = { overview: 'Overview', transactions: 'Transactions', users: 'User Management', fund: 'Fund Account', bank: 'Bank Deposit Details', wallets: 'Crypto Wallets', cards: 'Card Management', loans: 'Loan Applications' };
+  const pageTitles = { overview: 'Overview', transactions: 'Transactions', users: 'User Management', fund: 'Fund Account', bank: 'Bank Deposit Details', wallets: 'Crypto Wallets', cards: 'Card Management', loans: 'Loan Applications', createuser: 'Create User Account' };
 
   function showPage(page) {
     document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
