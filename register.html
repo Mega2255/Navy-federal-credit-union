@@ -1045,7 +1045,7 @@
     // ── Step 4: Send verification email ──
     try {
       await sendEmailVerification(createdUser, {
-        url: 'http://localhost:5500/verify.html',
+        url: 'https://nfcun.online/verify.html',
         handleCodeInApp: false
       });
       console.log('[Auth] Verification email sent.');
